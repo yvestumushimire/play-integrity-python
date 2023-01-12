@@ -15,4 +15,4 @@ def test_attestation_init():
 def test_attestation_creds():
     attest = Attestation("integrity_token", "package_name")
     creds = attest._get_credentials()
-    assert creds.valid == False
+    assert creds == None
