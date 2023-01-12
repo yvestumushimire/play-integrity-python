@@ -5,7 +5,7 @@ description = "Python library to verify Play Integrity API"
 authors = ["Yves Tumushimire <yvestumushimire@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 google-api-python-client = "^2.72.0"
 google-auth = "^2.16.0"
 
