@@ -5,13 +5,13 @@ description = "Python library to verify Play Integrity API"
 authors = ["Yves Tumushimire <yvestumushimire@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.10"
 google-api-python-client = "^2.72.0"
 google-auth = "^2.16.0"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
 black = {version = "^22.12.0", allow-prereleases = true}
+pytest = "^7.2.0"
 pytest-cov = "^4.0.0"
 
 [build-system]
