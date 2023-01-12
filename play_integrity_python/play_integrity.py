@@ -1,6 +1,10 @@
 import google.auth
 from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
+import logging
+
+
+log = logging.getLogger(__name__)
 
 
 class Attestation:
@@ -23,8 +27,12 @@ class Attestation:
         self.integrity_token = integrity_token
         self.package_name = package_name
 
-    def _get_credentials(self) -> Credentials:
-        credentials, _ = google.auth.default()
+    def _get_credentials(self) -> Credentials | None:
+        try:
+            credentials, _ = google.auth.default()
+        except Exception as e:
+            log.warning(e)
+            return None
         return credentials
 
     def verify_online(self):
