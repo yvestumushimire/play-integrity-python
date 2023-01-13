@@ -1,8 +1,8 @@
+import logging
+from typing import Dict, Optional
+
 import google.auth
 from googleapiclient.discovery import build
-from google.oauth2.credentials import Credentials
-import logging
-
 
 log = logging.getLogger(__name__)
 
@@ -27,17 +27,45 @@ class Attestation:
         self.integrity_token = integrity_token
         self.package_name = package_name
 
-    def _get_credentials(self) -> Credentials | None:
+    def _decrypt_integrity_token(self) -> Optional[Dict]:
+        """
+        Decrypt integrity token on google servers
+        Args:
+            - token: integrity token
+        return:
+            optional dict:
+
+        """
         try:
             credentials, _ = google.auth.default()
+            service = build(
+                "playintegrity",
+                "v1",
+                credentials=credentials,
+            )
+            data = {
+                "integrity_token": self.integrity_token
+            }
+            response = (
+                service.v1()
+                .decodeIntegrityToken(
+                    packageName="com.truststamp.trustedcheckin.client.dev", body=data
+                )
+                .execute()
+            )
+
         except Exception as e:
             log.warning(e)
             return None
-        return credentials
+        service.close()
+        return response
 
-    def verify_online(self):
+    def verify_online(self, nonce: str) -> bool:
         """
         Get decrypted and verified integrity verdict on Google's servers
         check verdict if passed or not passed
         """
-        pass
+        data = self._decrypt_integrity_token()
+        if not data:
+            return False
+        return True
