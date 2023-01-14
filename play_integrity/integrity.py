@@ -34,7 +34,12 @@ class Attestation:
             - token: integrity token
         return:
             optional dict:
-
+                {
+                    requestDetails: { ... }
+                    appIntegrity: { ... }
+                    deviceIntegrity: { ... }
+                    accountDetails: { ... }
+                }
         """
         try:
             credentials, _ = google.auth.default()
@@ -43,9 +48,7 @@ class Attestation:
                 "v1",
                 credentials=credentials,
             )
-            data = {
-                "integrity_token": self.integrity_token
-            }
+            data = {"integrity_token": self.integrity_token}
             response = (
                 service.v1()
                 .decodeIntegrityToken(
@@ -60,7 +63,7 @@ class Attestation:
         service.close()
         return response
 
-    def verify_online(self, nonce: str) -> bool:
+    def verify_online(self, nonce: Optional[str] = None) -> bool:
         """
         Get decrypted and verified integrity verdict on Google's servers
         check verdict if passed or not passed
@@ -68,4 +71,20 @@ class Attestation:
         data = self._decrypt_integrity_token()
         if not data:
             return False
-        return True
+
+        token_payload = data.get("tokenPayloadExternal", {})
+        verdicts = []
+        # check package name
+        request_details = token_payload.get("requestDetails", {})
+        verdicts.append(request_details.get("requestPackageName") == self.package_name)
+        # check nonce
+        if nonce:
+            verdicts.append(request_details.get("nonce") == nonce)
+        # device integrity
+        deviceIntegrity = token_payload.get("deviceIntegrity", {})
+        verdicts.append(
+            "MEETS_DEVICE_INTEGRITY"
+            in deviceIntegrity.get("deviceRecognitionVerdict", [])
+        )
+        log.debug(verdicts)
+        return all(verdicts)
