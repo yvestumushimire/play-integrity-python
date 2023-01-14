@@ -1,5 +1,4 @@
-from play_integrity import __version__
-from play_integrity.integrity import Attestation
+from play_integrity import Attestation, __version__
 
 
 def test_version():

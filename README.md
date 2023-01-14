@@ -25,7 +25,26 @@ a Python library that verify apps and games from potentially risky and fraudulen
 
 ### Installation
 
+```bash
+pip install play-integrity
+```
+
 ## Usage
+
+Make sure that `GOOGLE_APPLICATION_CREDENTIALS` is set
+
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS=/path/to/config.json
+```
+
+eg:
+
+```py
+from play_integrity import Attestation
+
+attest = Attestation("integrity_token", "package_name")
+passed = attest.verify_online("nonce")
+```
 
 ## Contributing
 

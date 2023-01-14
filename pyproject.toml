@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "play-integrity-python"
+name = "play-integrity"
 version = "0.1.0"
 description = "Python library to verify Play Integrity API"
 authors = ["Yves Tumushimire <yvestumushimire@gmail.com>"]
