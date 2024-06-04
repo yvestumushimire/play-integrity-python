@@ -52,7 +52,7 @@ class Attestation:
             response = (
                 service.v1()
                 .decodeIntegrityToken(
-                    packageName="com.truststamp.trustedcheckin.client.dev", body=data
+                    packageName=self.package_name, body=data
                 )
                 .execute()
             )
